@@ -7,6 +7,11 @@ It provide an SSL certificate and allow to start a site.
 
 Put your code/website inside `www` folder.
 
+Make sure your server allow SSL ports :
+```=bash
+sudo ufw allow https #or desactivate it with sudo ufw disable
+```
+
 Then execute this command :
 ```=bash
 ./init-letsencrypt.sh
