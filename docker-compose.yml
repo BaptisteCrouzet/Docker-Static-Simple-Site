@@ -1,23 +1,40 @@
 version: "3.3"
 services:
+  php-fpm:
+    image: php:fpm-alpine
+    container_name: php-fpm
+    volumes:
+      - ./www:/usr/share/nginx/html
+    ports:
+      - 9000:9000
+    networks:
+      - php-fpm
   nginx:
     restart: always
     build:
       context: "."
       dockerfile: "Dockerfile"
+    depends_on:
+      - php-fpm
     ports:
       - 80:80
       - 443:443
     volumes:
-      # - ./docker/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
+      # - ./data/certbot/conf:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
+      - .modules:/etc/nginx/modules
+      - .modules-enabled:/etc/nginx/modules-enabled
       - ./data/certbot/www:/var/www/certbot
-      - /www/var/html/:/www/var/html/
+      - ./www:/usr/share/nginx/html
+    networks:
+      - php-fpm
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  certbot:
-    restart: always
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  # certbot:
+  #   restart: always
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+networks:
+    php-fpm:
