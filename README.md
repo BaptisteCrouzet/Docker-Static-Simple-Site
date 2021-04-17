@@ -5,6 +5,16 @@ It provide an SSL certificate and allow to start a site.
 
 ## Setup
 
+### Configuration
+
+* Rename the files in the `site-available` and `site-enabled`.
+
+* Change their content, by replacing baptistecrouzet.fr every where you can find it, by your own domaine name.
+
+* Add your domains inside `init-letsencrypt.sh` file
+
+### Setup in production
+
 Put your code/website inside `www` folder.
 
 Make sure your server allow SSL ports :
